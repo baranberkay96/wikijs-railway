@@ -149,10 +149,27 @@ async function lockGuests () {
     : 'WARNING: guest group not found; check Administration > Groups')
 }
 
+// WIKI_ADMIN_RESET=true: set WIKI_ADMIN_PASSWORD on the WIKI_ADMIN_EMAIL account again.
+async function resetAdmin () {
+  const values = adminValues()
+  if (values.adminPassword !== (env.WIKI_ADMIN_PASSWORD || '')) {
+    log('WARNING: WIKI_ADMIN_RESET=true but WIKI_ADMIN_PASSWORD is not usable; password not changed')
+    return
+  }
+  const bcrypt = require('/wiki/node_modules/bcryptjs-then')
+  const hash = await bcrypt.hash(values.adminPassword, 12)
+  const rows = await query(
+    `UPDATE users SET password = $1, "tfaIsActive" = false, "isActive" = true, "updatedAt" = $3
+       WHERE lower(email) = $2 AND "providerKey" = 'local' RETURNING id`, [hash, values.adminEmail, new Date().toISOString()])
+  log(rows.length ? `WIKI_ADMIN_RESET: password of ${values.adminEmail} set from WIKI_ADMIN_PASSWORD; set WIKI_ADMIN_RESET=false again`
+    : `WARNING: WIKI_ADMIN_RESET: no local account ${values.adminEmail}`)
+}
+
 async function main () {
   if (!await waitForPostgres(15 * 60 * 1000)) return false
   if (await setupDone()) {
     log('Wiki.js is already set up; nothing to do')
+    if (/^(1|true|yes|on)$/i.test(env.WIKI_ADMIN_RESET || '')) await resetAdmin()
     return true
   }
   if (!await finishSetup()) return false

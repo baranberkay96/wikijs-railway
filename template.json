@@ -90,7 +90,12 @@
         },
         "WIKI_ADMIN_PASSWORD": {
           "defaultValue": "${{secret(24, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
-          "description": "Administrator password (12+ characters), used on the first deploy only; change it later in your profile.",
+          "description": "Administrator password (12+ characters), used on the first deploy (and with WIKI_ADMIN_RESET=true).",
+          "required": false
+        },
+        "WIKI_ADMIN_RESET": {
+          "defaultValue": "false",
+          "description": "true: on the next deploy, set WIKI_ADMIN_PASSWORD on the WIKI_ADMIN_EMAIL account again (then set back to false).",
           "required": false
         },
         "WIKI_GUEST_ACCESS": {
