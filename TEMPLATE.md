@@ -39,12 +39,21 @@
 
 ## Resources
 
-See the round-13 report for measured values.
+Measured on Railway (2026-11-24, idle after setup, a page and searches):
+
+| Service | Idle RAM | Peak seen | CPU idle |
+|---|---|---|---|
+| Wiki.js | 0.19 GB | 0.20 GB | < 0.01 vCPU |
+| Postgres | 0.06 GB | 0.08 GB | < 0.01 |
+
+Total ≈ 0.25 GB → ≈ $2.5/month idle RAM. Fits Trial (1 GB/service) and Free (0.5 GB).
 
 ## Verification checklist
 
-- [ ] Pre-deploy log `setup finished`; service SUCCESS; `/healthz` 200.
-- [ ] Guest `/` redirects to login; admin login via GraphQL; page create + search; wrong password refused.
+- [x] Pre-deploy log `setup finished; admin admin@example.com`, `guests have no access`; both services SUCCESS; `/healthz` 200.
+- [x] Guest `/` → `/login`; guest GraphQL `pages.list` Forbidden; guest page view 403.
+- [x] Admin login (GraphQL, local strategy); page create; search by title (basic DB engine searches title/description); wrong password refused.
+- [x] `WIKI_ADMIN_RESET=true` re-applied the password; with `WIKI_ADMIN_PASSWORD=abc` the reset is skipped with a warning and the deploy stays SUCCESS.
 
 ## Open questions
 
