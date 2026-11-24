@@ -1,5 +1,7 @@
 # Deploy and Host Wiki.js with Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/wikijs-25-wiki-with-admin-preconfigured-?referralCode=20H68q)
+
 Wiki.js is a modern open-source wiki with Markdown, visual and HTML editors, page history, fine-grained permissions, built-in search and many login providers. This template runs Wiki.js 2.5 on PostgreSQL 18 with the administrator created for you and the setup wizard already completed, so nobody else can claim your wiki.
 
 ## About Hosting Wiki.js
